@@ -1,5 +1,15 @@
+// const KMarkDownBuilder = require('./KMarkDownBuilder')
+
 module.exports = class KMarkDown {
-  constructor(client, data) {
-    throw new client.NotImplemented('KMarkDown is WIP.')
+  constructor(object) {
+    if (object.content) this.content = object.content
+  }
+
+  getContent() {
+    return this.content
+  }
+
+  setContent(kmd) {
+    this.content = kmd
   }
 }

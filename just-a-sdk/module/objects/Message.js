@@ -13,6 +13,8 @@ module.exports = class Message {
     if (raw_data.d.channel_type === "GROUP") {
       this.channel = new GuildChannel(client, { id: raw_data.d.target_id, channel_name: raw_data.d.extra.channel_name })
       this.member = new GuildMember(client, raw_data.d.extra.author)
-    } 
+    } else {
+      this.channel = new Channel(client, { id: raw_data.d.target_id, channel_name: raw_data.d.extra.channel_name })
+    }
   }
 }

@@ -10,29 +10,29 @@ class Handler {
     app.use(express.json())
 
     app.post('/', (req, res) => {
-      console.log(req.body)
+      client.emit('raw', req.body)
+      if (req.body.d.verify_token !== client.verify_token) {
+        client.emit('bad_request', req.body)
+        return res.status(401).send(
+          JSON.stringify({ 'error': 'Bad verifytoken.' })
+        )
+      }
       if (req.body.sn !== undefined) {
         if (seemed.includes(req.body.sn)) return
         else seemed.push(req.body.sn)
       }
       switch (req.body.d.channel_type) {
         case "WEBHOOK_CHALLENGE":
-          if (req.body.d.verify_token === client.verify_token) {
 
             client.emit("webhookLogin")
             client.emit("login")
 
             return res.status(200).send(JSON.stringify({ "challenge": req.body.d.challenge }))
-
-          } else {
-            return res.status(401).send(JSON.stringify({ 'error': 'Bad verifytoken.' }))
-          }
           break
         case "GROUP":
           client.emit('message', new Message(client, req.body))
           return res.status(200)
         default:
-          console.log(req.body)
           return res.status(200).send("ok") 
       }
     })
